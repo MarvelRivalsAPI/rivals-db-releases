@@ -1,9 +1,9 @@
 {
   "created_at": "2026-05-20T00:00:00Z",
-  "versionCode": 9,
-  "version": "1.0.8",
-  "description": "Adds the full in-app update experience with launch alerts, branded release notes, download progress, and installer handoff.",
-  "download_url": "https://github.com/MarvelRivalsAPI/rivals-db-releases/releases/download/v1.0.8/rivals-db-1.0.8.apk",
+  "versionCode": 10,
+  "version": "1.1.0",
+  "description": "Hero profile redesign, roster updates, app update flow improvements, home screen updates, Discord card, icon and splash polish, in app updates.",
+  "download_url": "https://github.com/MarvelRivalsAPI/rivals-db-releases/releases/download/v1.1.0/rivals-db-1.1.0.apk",
   "signature_download_url": "",
   "play_url": "market://details?id=com.example.rivalsdata"
 }
