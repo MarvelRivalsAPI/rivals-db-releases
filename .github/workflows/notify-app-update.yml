@@ -89,7 +89,7 @@ jobs:
                       type: "app_update",
                       versionCode: String(manifest.versionCode),
                       version: String(manifest.version),
-                      description: String(manifest.description || ""),
+                      description: String(manifest.description || manifest.body || ""),
                       download_url: String(manifest.download_url || ""),
                       play_url: String(manifest.play_url || "")
                     }
