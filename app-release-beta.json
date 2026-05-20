@@ -3,8 +3,8 @@
   "versionCode": 15,
   "version": "1.1.4-beta.2",
   "date": "2026-05-20",
-  "description": "Adds confirmation feedback when users enable or disable update notification settings, including the Beta updates toggle. Discord webhook test 2.",
-  "body": "Adds confirmation feedback when users enable or disable update notification settings, including the Beta updates toggle. Discord webhook test 2.",
+  "description": "Adds confirmation feedback when users enable or disable update notification settings, including the Beta updates toggle. Discord webhook test 3.",
+  "body": "Adds confirmation feedback when users enable or disable update notification settings, including the Beta updates toggle. Discord webhook test 3.",
   "download_url": "https://github.com/MarvelRivalsAPI/rivals-db-releases/releases/download/v1.1.4-beta.2/rivals-db-1.1.4-beta.2.apk",
   "signature_download_url": "",
   "play_url": "market://details?id=com.example.rivalsdata",
@@ -13,8 +13,8 @@
       "versionCode": 15,
       "version": "1.1.4-beta.2",
       "date": "2026-05-20",
-      "description": "Adds confirmation feedback when users enable or disable update notification settings, including the Beta updates toggle. Discord webhook test 2.",
-      "body": "Adds confirmation feedback when users enable or disable update notification settings, including the Beta updates toggle. Discord webhook test 2."
+      "description": "Adds confirmation feedback when users enable or disable update notification settings, including the Beta updates toggle. Discord webhook test 3.",
+      "body": "Adds confirmation feedback when users enable or disable update notification settings, including the Beta updates toggle. Discord webhook test 3."
     },
     {
       "versionCode": 14,
