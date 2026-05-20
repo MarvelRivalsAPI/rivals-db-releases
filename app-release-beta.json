@@ -1,14 +1,21 @@
 {
   "created_at": "2026-05-20T00:00:00Z",
-  "versionCode": 15,
-  "version": "1.1.4-beta.2",
+  "versionCode": 17,
+  "version": "1.1.4-beta.3",
   "date": "2026-05-20",
-  "description": "- Added confirmation feedback when app update notifications are enabled or disabled.\n- Added confirmation feedback when background update checks are enabled or disabled.\n- Added a welcome confirmation when Beta updates are enabled.\n- Added beta release notifications for the Discord beta channel.",
-  "body": "- Added confirmation feedback when app update notifications are enabled or disabled.\n- Added confirmation feedback when background update checks are enabled or disabled.\n- Added a welcome confirmation when Beta updates are enabled.\n- Added beta release notifications for the Discord beta channel.",
-  "download_url": "https://github.com/MarvelRivalsAPI/rivals-db-releases/releases/download/v1.1.4-beta.2/rivals-db-1.1.4-beta.2.apk",
+  "description": "- Fixed the notification settings sheet so rows no longer get cut off at the bottom.",
+  "body": "- Fixed the notification settings sheet so rows no longer get cut off at the bottom.",
+  "download_url": "https://github.com/MarvelRivalsAPI/rivals-db-releases/releases/download/v1.1.4-beta.3/rivals-db-1.1.4-beta.3.apk",
   "signature_download_url": "",
   "play_url": "market://details?id=com.example.rivalsdata",
   "releases": [
+    {
+      "versionCode": 17,
+      "version": "1.1.4-beta.3",
+      "date": "2026-05-20",
+      "description": "- Fixed the notification settings sheet so rows no longer get cut off at the bottom.",
+      "body": "- Fixed the notification settings sheet so rows no longer get cut off at the bottom."
+    },
     {
       "versionCode": 15,
       "version": "1.1.4-beta.2",
@@ -29,13 +36,6 @@
       "date": "2026-05-20",
       "description": "Adds the Beta updates setting so users can opt into beta builds while still receiving stable updates, plus hero detail screen refinements.",
       "body": "Adds the Beta updates setting so users can opt into beta builds while still receiving stable updates, plus hero detail screen refinements."
-    },
-    {
-      "versionCode": 12,
-      "version": "1.1.2",
-      "date": "2026-05-20",
-      "description": "Fix update checks when the installed app is already on the latest published version.",
-      "body": "Fix update checks when the installed app is already on the latest published version."
     }
   ]
 }
