@@ -1,12 +1,10 @@
-name: Notify App Update
+name: Notify Beta App Update
 
 on:
   push:
     branches: [main]
     paths:
-      - app-release.json
-  release:
-    types: [published, edited]
+      - app-release-beta.json
 
 jobs:
   notify:
@@ -19,7 +17,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Send Firebase push notification
+      - name: Send beta update notifications
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           DISCORD_BETA_WEBHOOK_URL: ${{ secrets.DISCORD_BETA_WEBHOOK_URL }}
@@ -28,16 +26,13 @@ jobs:
           const fs = require("fs");
           const crypto = require("crypto");
 
+          const manifestPath = "app-release-beta.json";
+          const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
           const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
           async function getAccessToken() {
             const now = Math.floor(Date.now() / 1000);
-
-            const header = Buffer.from(JSON.stringify({
-              alg: "RS256",
-              typ: "JWT"
-            })).toString("base64url");
-
+            const header = Buffer.from(JSON.stringify({ alg: "RS256", typ: "JWT" })).toString("base64url");
             const claim = Buffer.from(JSON.stringify({
               iss: serviceAccount.client_email,
               scope: "https://www.googleapis.com/auth/firebase.messaging",
@@ -45,13 +40,8 @@ jobs:
               iat: now,
               exp: now + 3600
             })).toString("base64url");
-
             const unsigned = `${header}.${claim}`;
-            const signature = crypto
-              .createSign("RSA-SHA256")
-              .update(unsigned)
-              .sign(serviceAccount.private_key, "base64url");
-
+            const signature = crypto.createSign("RSA-SHA256").update(unsigned).sign(serviceAccount.private_key, "base64url");
             const jwt = `${unsigned}.${signature}`;
 
             const res = await fetch("https://oauth2.googleapis.com/token", {
@@ -68,10 +58,7 @@ jobs:
             return data.access_token;
           }
 
-          async function sendManifest(token, manifestPath, topic) {
-            if (!fs.existsSync(manifestPath)) return;
-            const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-
+          async function sendFirebase(token) {
             const res = await fetch(
               `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
               {
@@ -82,10 +69,8 @@ jobs:
                 },
                 body: JSON.stringify({
                   message: {
-                    topic,
-                    android: {
-                      priority: "HIGH"
-                    },
+                    topic: "app-updates-beta",
+                    android: { priority: "HIGH" },
                     data: {
                       type: "app_update",
                       versionCode: String(manifest.versionCode),
@@ -101,12 +86,62 @@ jobs:
 
             const text = await res.text();
             if (!res.ok) throw new Error(text);
-            console.log(`${manifestPath} -> ${topic}: ${text}`);
+            console.log(`${manifestPath} -> app-updates-beta: ${text}`);
+          }
+
+          function trimDiscordText(value, maxLength) {
+            const text = String(value || "").trim();
+            if (text.length <= maxLength) return text;
+            return `${text.slice(0, maxLength - 3)}...`;
+          }
+
+          async function sendDiscord() {
+            const webhook = process.env.DISCORD_BETA_WEBHOOK_URL;
+            if (!webhook) {
+              console.log("DISCORD_BETA_WEBHOOK_URL is not set; skipping Discord beta notification");
+              return;
+            }
+
+            const notes = manifest.body || manifest.description || "A new beta build is available.";
+            const version = String(manifest.version || "beta");
+            const downloadUrl = String(manifest.download_url || "");
+            const res = await fetch(webhook, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                username: "Rivals DB Updates",
+                embeds: [
+                  {
+                    title: `Rivals DB ${version} beta is available`,
+                    description: trimDiscordText(notes, 3500),
+                    color: 15105570,
+                    fields: [
+                      {
+                        name: "Build",
+                        value: `Beta - versionCode ${manifest.versionCode}`,
+                        inline: true
+                      },
+                      {
+                        name: "Download",
+                        value: downloadUrl ? `[APK](${downloadUrl})` : "Not provided",
+                        inline: true
+                      }
+                    ],
+                    timestamp: new Date().toISOString()
+                  }
+                ]
+              })
+            });
+
+            const text = await res.text();
+            if (!res.ok) throw new Error(`Discord beta webhook failed: ${text}`);
+            console.log(`${manifestPath} -> Discord beta webhook`);
           }
 
           async function main() {
             const token = await getAccessToken();
-            await sendManifest(token, "app-release.json", "app-updates");
+            await sendFirebase(token);
+            await sendDiscord();
           }
 
           main().catch(err => {
