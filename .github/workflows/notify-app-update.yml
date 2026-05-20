@@ -23,6 +23,7 @@ jobs:
       - name: Send Firebase push notification
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DISCORD_BETA_WEBHOOK_URL: ${{ secrets.DISCORD_BETA_WEBHOOK_URL }}
         run: |
           node <<'NODE'
           const fs = require("fs");
@@ -116,6 +117,54 @@ jobs:
             console.log(`${manifestPath} -> ${topic}: ${text}`);
           }
 
+          function trimDiscordText(value, maxLength) {
+            const text = String(value || "").trim();
+            if (text.length <= maxLength) return text;
+            return `${text.slice(0, maxLength - 3)}...`;
+          }
+
+          async function sendBetaDiscord(manifestPath) {
+            const webhook = process.env.DISCORD_BETA_WEBHOOK_URL;
+            if (!webhook || manifestPath !== "app-release-beta.json" || !fs.existsSync(manifestPath)) return;
+
+            const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+            const notes = manifest.body || manifest.description || "A new beta build is available.";
+            const version = String(manifest.version || "beta");
+            const downloadUrl = String(manifest.download_url || "");
+
+            const res = await fetch(webhook, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                username: "Rivals DB Updates",
+                embeds: [
+                  {
+                    title: `Rivals DB ${version} beta is available`,
+                    description: trimDiscordText(notes, 3500),
+                    color: 15105570,
+                    fields: [
+                      {
+                        name: "Build",
+                        value: `Beta - versionCode ${manifest.versionCode}`,
+                        inline: true
+                      },
+                      {
+                        name: "Download",
+                        value: downloadUrl ? `[APK](${downloadUrl})` : "Not provided",
+                        inline: true
+                      }
+                    ],
+                    timestamp: new Date().toISOString()
+                  }
+                ]
+              })
+            });
+
+            const text = await res.text();
+            if (!res.ok) throw new Error(`Discord beta webhook failed: ${text}`);
+            console.log(`${manifestPath} -> Discord beta webhook`);
+          }
+
           async function main() {
             const token = await getAccessToken();
             for (const manifestPath of changedManifests()) {
@@ -124,6 +173,7 @@ jobs:
                 manifestPath,
                 manifestPath === "app-release-beta.json" ? "app-updates-beta" : "app-updates"
               );
+              await sendBetaDiscord(manifestPath);
             }
           }
 
