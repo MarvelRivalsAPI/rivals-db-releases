@@ -106,8 +106,10 @@ jobs:
             const version = String(manifest.version || "beta");
             const displayVersion = version.startsWith("v") ? version : `v${version}`;
             const downloadUrl = String(manifest.download_url || "");
+            const avatarUrl = "https://raw.githubusercontent.com/MarvelRivalsAPI/rivals-db-releases/main/rivals-db-icon.png";
             const payload = {
               username: "Rivals DB Updates",
+              avatar_url: avatarUrl,
               embeds: [
                 {
                   title: `Rivals DB ${displayVersion} is available`,
@@ -123,6 +125,11 @@ jobs:
                       name: "Version",
                       value: displayVersion,
                       inline: true
+                    },
+                    {
+                      name: "Download",
+                      value: downloadUrl ? `[Download APK](${downloadUrl})` : "Not available",
+                      inline: false
                     }
                   ],
                   footer: {
@@ -147,7 +154,9 @@ jobs:
                 }
               ];
             }
-            const res = await fetch(webhook, {
+            const webhookUrl = new URL(webhook);
+            webhookUrl.searchParams.set("with_components", "true");
+            const res = await fetch(webhookUrl, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload)
