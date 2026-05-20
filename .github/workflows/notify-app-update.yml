@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - app-release.json
+      - app-release-beta.json
   release:
     types: [published, edited]
 
@@ -27,7 +28,6 @@ jobs:
           const fs = require("fs");
           const crypto = require("crypto");
 
-          const manifest = JSON.parse(fs.readFileSync("app-release.json", "utf8"));
           const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
           async function getAccessToken() {
@@ -68,8 +68,21 @@ jobs:
             return data.access_token;
           }
 
-          async function main() {
-            const token = await getAccessToken();
+          function changedManifests() {
+            const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"));
+            if (event.release) return ["app-release.json"];
+            const changed = new Set();
+            for (const commit of event.commits || []) {
+              for (const file of [...(commit.added || []), ...(commit.modified || [])]) {
+                if (file === "app-release.json" || file === "app-release-beta.json") changed.add(file);
+              }
+            }
+            return changed.size ? [...changed] : ["app-release.json"];
+          }
+
+          async function sendManifest(token, manifestPath, topic) {
+            if (!fs.existsSync(manifestPath)) return;
+            const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 
             const res = await fetch(
               `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
@@ -81,7 +94,7 @@ jobs:
                 },
                 body: JSON.stringify({
                   message: {
-                    topic: "app-updates",
+                    topic,
                     android: {
                       priority: "HIGH"
                     },
@@ -100,7 +113,18 @@ jobs:
 
             const text = await res.text();
             if (!res.ok) throw new Error(text);
-            console.log(text);
+            console.log(`${manifestPath} -> ${topic}: ${text}`);
+          }
+
+          async function main() {
+            const token = await getAccessToken();
+            for (const manifestPath of changedManifests()) {
+              await sendManifest(
+                token,
+                manifestPath,
+                manifestPath === "app-release-beta.json" ? "app-updates-beta" : "app-updates"
+              );
+            }
           }
 
           main().catch(err => {
