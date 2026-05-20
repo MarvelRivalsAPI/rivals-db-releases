@@ -104,33 +104,53 @@ jobs:
 
             const notes = manifest.body || manifest.description || "A new beta build is available.";
             const version = String(manifest.version || "beta");
+            const displayVersion = version.startsWith("v") ? version : `v${version}`;
             const downloadUrl = String(manifest.download_url || "");
+            const payload = {
+              username: "Rivals DB Updates",
+              embeds: [
+                {
+                  title: `Rivals DB ${displayVersion} is available`,
+                  description: trimDiscordText(notes, 3500),
+                  color: 15105570,
+                  fields: [
+                    {
+                      name: "Channel",
+                      value: "Beta",
+                      inline: true
+                    },
+                    {
+                      name: "Version",
+                      value: displayVersion,
+                      inline: true
+                    }
+                  ],
+                  footer: {
+                    text: "Beta build"
+                  },
+                  timestamp: new Date().toISOString()
+                }
+              ]
+            };
+            if (downloadUrl) {
+              payload.components = [
+                {
+                  type: 1,
+                  components: [
+                    {
+                      type: 2,
+                      style: 5,
+                      label: "Download APK",
+                      url: downloadUrl
+                    }
+                  ]
+                }
+              ];
+            }
             const res = await fetch(webhook, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                username: "Rivals DB Updates",
-                embeds: [
-                  {
-                    title: `Rivals DB ${version} beta is available`,
-                    description: trimDiscordText(notes, 3500),
-                    color: 15105570,
-                    fields: [
-                      {
-                        name: "Build",
-                        value: `Beta - versionCode ${manifest.versionCode}`,
-                        inline: true
-                      },
-                      {
-                        name: "Download",
-                        value: downloadUrl ? `[APK](${downloadUrl})` : "Not provided",
-                        inline: true
-                      }
-                    ],
-                    timestamp: new Date().toISOString()
-                  }
-                ]
-              })
+              body: JSON.stringify(payload)
             });
 
             const text = await res.text();
