@@ -1,20 +1,20 @@
 {
-  "created_at": "2026-05-20T00:00:00Z",
-  "versionCode": 19,
-  "version": "1.1.4-beta.5",
-  "date": "2026-05-20",
-  "description": "- Tested the app-icon beta Discord webhook avatar.\n- Kept the beta update screen focused on the current beta release.\n- Kept a reliable APK download link in beta Discord release notices.",
-  "body": "- Tested the app-icon beta Discord webhook avatar.\n- Kept the beta update screen focused on the current beta release.\n- Kept a reliable APK download link in beta Discord release notices.",
-  "download_url": "https://github.com/MarvelRivalsAPI/rivals-db-releases/releases/download/v1.1.4-beta.5/rivals-db-1.1.4-beta.5.apk",
+  "created_at": "2026-05-26T00:00:00Z",
+  "versionCode": 20,
+  "version": "1.1.4-beta.6",
+  "date": "2026-05-26",
+  "description": "- Improved hero detail abilities with transformation filtering, expandable details, and inline ability videos.\n- Improved hero costumes with cleaner cards and quality rarity icons.\n- Updated hero lore layout to match the requested structure with the app's UI style.\n- Fixed ability filtering so shared abilities stay visible for heroes without form-specific mappings.",
+  "body": "- Improved hero detail abilities with transformation filtering, expandable details, and inline ability videos.\n- Improved hero costumes with cleaner cards and quality rarity icons.\n- Updated hero lore layout to match the requested structure with the app's UI style.\n- Fixed ability filtering so shared abilities stay visible for heroes without form-specific mappings.",
+  "download_url": "https://raw.githubusercontent.com/MarvelRivalsAPI/rivals-db-releases/main/rivals-db-1.1.4-beta.6.apk",
   "signature_download_url": "",
   "play_url": "market://details?id=com.example.rivalsdata",
   "releases": [
     {
-      "versionCode": 19,
-      "version": "1.1.4-beta.5",
-      "date": "2026-05-20",
-      "description": "- Tested the app-icon beta Discord webhook avatar.\n- Kept the beta update screen focused on the current beta release.\n- Kept a reliable APK download link in beta Discord release notices.",
-      "body": "- Tested the app-icon beta Discord webhook avatar.\n- Kept the beta update screen focused on the current beta release.\n- Kept a reliable APK download link in beta Discord release notices."
+      "versionCode": 20,
+      "version": "1.1.4-beta.6",
+      "date": "2026-05-26",
+      "description": "- Improved hero detail abilities with transformation filtering, expandable details, and inline ability videos.\n- Improved hero costumes with cleaner cards and quality rarity icons.\n- Updated hero lore layout to match the requested structure with the app's UI style.\n- Fixed ability filtering so shared abilities stay visible for heroes without form-specific mappings.",
+      "body": "- Improved hero detail abilities with transformation filtering, expandable details, and inline ability videos.\n- Improved hero costumes with cleaner cards and quality rarity icons.\n- Updated hero lore layout to match the requested structure with the app's UI style.\n- Fixed ability filtering so shared abilities stay visible for heroes without form-specific mappings."
     }
   ]
 }
